@@ -42,50 +42,72 @@ const SignIn = () => {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        top: "0",
+        left: "0",
+        right: "0",
+        bottom: "0",
+        marginTop: "10px",
+        height: "100%",
+        backgroundImage: "url('https://wallpaperaccess.com/full/1768590.jpg')",
+        paddingTop: "100px",
+        paddingBottom: "250px",
+      }}
+    >
       <div
         style={{
-          position: "absolute",
-          top: "20%",
-          left: "30%",
-          border: "solid",
-          borderWidth: "5px",
-          borderRadius: "20px",
-          width: "40%",
-          padding: "20px",
-          borderColor: "white",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
         }}
       >
-        <form onSubmit={handleFormSubmit}>
-          <div class="form-group">
-            <label for="exampleInputEmail1">Email address</label>
-            <input
-              onChange={(e) => setemail(e.target.value)}
-              type="email"
-              class="form-control"
-              id="exampleInputEmail1"
-              aria-describedby="emailHelp"
-              placeholder="Enter email"
-            />
-            <small id="emailHelp" class="form-text text-muted">
-              We'll never share your email with anyone else.
-            </small>
-          </div>
-          <div class="form-group">
-            <label for="exampleInputPassword1">Password</label>
-            <input
-              onChange={(e) => setpassword(e.target.value)}
-              type="password"
-              class="form-control"
-              id="exampleInputPassword1"
-              placeholder="Password"
-            />
-          </div>
+        <div
+          className="row"
+          style={{
+            border: "solid",
+            borderWidth: "5px",
+            borderRadius: "20px",
+            width: "60%",
+            height: "100%",
+            padding: "20px",
+            borderColor: "white",
+          }}
+        >
+          <div class="col-md-6 col-12">
+            <form onSubmit={handleFormSubmit}>
+              <div class="form-group">
+                <label for="exampleInputEmail1">Email address</label>
+                <input
+                  onChange={(e) => setemail(e.target.value)}
+                  type="email"
+                  class="form-control"
+                  id="exampleInputEmail1"
+                  aria-describedby="emailHelp"
+                  placeholder="Enter email"
+                />
+                <small id="emailHelp" class="form-text text-muted">
+                  We'll never share your email with anyone else.
+                </small>
+              </div>
+              <div class="form-group">
+                <label for="exampleInputPassword1">Password</label>
+                <input
+                  onChange={(e) => setpassword(e.target.value)}
+                  type="password"
+                  class="form-control"
+                  id="exampleInputPassword1"
+                  placeholder="Password"
+                />
+              </div>
 
-          <button type="submit" class="btn btn-primary">
-            Submit
-          </button>
-        </form>
+              <button type="submit" class="btn btn-primary">
+                Submit
+              </button>
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   );

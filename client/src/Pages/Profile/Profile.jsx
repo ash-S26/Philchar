@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import NgoTags from "../../Components/NgoTags";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Footer from "../../Components/Footer/Footer";
 
 const Profile = () => {
   const who = localStorage.getItem("user");
@@ -132,7 +133,14 @@ const Profile = () => {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        paddingBottom: "100px",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        backgroundImage: "url('https://wallpaperaccess.com/full/1768590.jpg')",
+      }}
+    >
       <NgoTags />
 
       <form
@@ -540,6 +548,7 @@ const Profile = () => {
             margin: "0 auto",
             marginTop: "20px",
             marginBottom: "20px",
+            paddingBottom: "30px",
           }}
           class="btn btn-primary"
           value={"Update"}

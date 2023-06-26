@@ -195,13 +195,17 @@ const ListNgos = () => {
   return (
     <div
       style={{
-        backgroundColor: "#fff8de",
+        backgroundImage: "url('https://wallpaperaccess.com/full/1768590.jpg')",
         marginTop: "-20px",
+        padding: "100px",
         paddingTop: "20px",
       }}
     >
       <NgoTags />
-      <form onSubmit={handlesearch}>
+      <form
+        style={{ paddingTop: "20px", color: "white" }}
+        onSubmit={handlesearch}
+      >
         <div
           class="form-group"
           style={{ padding: "30px", paddingBottom: "0px" }}
@@ -242,6 +246,7 @@ const ListNgos = () => {
             display: "flex",
             justifyContent: "space-evenly",
             margin: "0 auto",
+            paddingBottom: "30px",
           }}
           value={"Search"}
         />

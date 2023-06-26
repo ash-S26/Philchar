@@ -149,13 +149,12 @@ const Navbar = () => {
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
-          <span class="navbar-toggler-icon navbar-light"></span>
+          <span class="navbar-toggler-icon">|||</span>
         </button>
         <div class="collapse navbar-collapse" id="navbar_drop">
-          <ul class="navbar-nav ml-auto">
+          <ul class="navbar-nav">
             <li
               style={{
-                paddingLeft: "861px",
                 fontWeight: "1000",
                 fontSize: "large",
               }}

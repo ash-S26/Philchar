@@ -39,7 +39,13 @@ const Payment = ({ ngoname, amount }) => {
   };
 
   return (
-    <div>
+    <div
+      style={{
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        backgroundImage: "url('https://wallpaperaccess.com/full/1768590.jpg')",
+      }}
+    >
       <input
         onClick={(e) => paymentHandler(e)}
         style={{

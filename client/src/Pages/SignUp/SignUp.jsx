@@ -59,7 +59,15 @@ const SignUp = () => {
   };
 
   return (
-    <div style={{ padding: "200px", paddingTop: "20px" }}>
+    <div
+      style={{
+        padding: "200px",
+        paddingTop: "20px",
+        backgroundRepeat: "no-repeat",
+        backgroundSize: "cover",
+        backgroundImage: "url('https://wallpaperaccess.com/full/1768590.jpg')",
+      }}
+    >
       <NgoTags />
       <form onSubmit={handlePhilFormSubmit}>
         <div class="form-row">

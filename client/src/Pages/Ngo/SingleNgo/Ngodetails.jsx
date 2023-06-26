@@ -69,7 +69,7 @@ const Ngodetails = () => {
 
   return (
     <div>
-      <header>
+      <header style={{ marginBottom: "0px", paddingBottom: "0px" }}>
         <h1>
           {ngodata.ngoname.toUpperCase()}
 
@@ -80,7 +80,18 @@ const Ngodetails = () => {
           {ngodata.ngocity + ", " + ngodata.ngostate + ", " + ngodata.ngozip}
         </p>
       </header>
-      <div style={{ paddingLeft: "20px", paddingRight: "20px" }}>
+      <div
+        style={{
+          paddingLeft: "20px",
+          paddingRight: "20px",
+          marginTop: "0px",
+          paddingTop: "0px",
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+          backgroundImage:
+            "url('https://wallpaperaccess.com/full/1768590.jpg')",
+        }}
+      >
         <div
           style={{
             display: "flex",
