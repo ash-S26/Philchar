@@ -21,8 +21,9 @@ const Counter = ({ endCount, text, src }) => {
       style={{
         width: "23rem",
         borderRadius: "20px",
-        backgroundColor: "#72ff97",
+        backgroundColor: "#101010",
         margin: "20px",
+        color: "white",
       }}
     >
       <div
@@ -35,7 +36,7 @@ const Counter = ({ endCount, text, src }) => {
         />
         <br />
         <br />
-        <h2 class="card-title" style={{ color: "black" }}>
+        <h2 class="card-title" style={{ color: "white" }}>
           {text}
         </h2>
         <CountUp
@@ -46,7 +47,7 @@ const Counter = ({ endCount, text, src }) => {
           decimal=","
           prefix=""
           suffix=""
-          style={{ fontSize: "24px", fontWeight: "bold", color: "black" }}
+          style={{ fontSize: "24px", fontWeight: "bold", color: "white" }}
           onMount={() => setStartCountUp(true)}
           enableScrollSpy={true}
         />

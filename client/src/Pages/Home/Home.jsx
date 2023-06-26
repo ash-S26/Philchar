@@ -153,7 +153,8 @@ const Home = () => {
             display: "flex",
             justifyContent: "center",
             justifyItems: "center",
-            fontSize: "20px",
+            fontSize: "30px",
+            fontWeight: "20px",
           }}
         >
           Contribute To Any
@@ -224,7 +225,8 @@ const Home = () => {
             display: "flex",
             justifyContent: "center",
             justifyItems: "center",
-            fontSize: "20px",
+            fontSize: "30px",
+            fontWeight: "20px",
           }}
         >
           Join Our Community
@@ -241,21 +243,21 @@ const Home = () => {
         >
           <Count
             endCount={100}
-            text={"Total NGOs"}
+            text={"Registered NGOs"}
             src={
               "https://assets.vakilsearch.com/live-images/ngo-registration.jpg.jpg"
             }
           />
           <Count
             endCount={100}
-            text={"Total philantrophist"}
+            text={"Total Philantrophist"}
             src={
               "https://cdnwp.tonyrobbins.com/wp-content/uploads/2018/08/jk-rowling-philanthropist-550x368.jpg"
             }
           />
           <Count
             endCount={100}
-            text={"Our spread across states"}
+            text={"Our Spread Across States"}
             src={
               "https://thumbs.dreamstime.com/b/cute-earth-character-waving-hand-cartoon-mascot-globe-personage-save-planet-concept-isolated-vector-illustration-177087114.jpg"
             }

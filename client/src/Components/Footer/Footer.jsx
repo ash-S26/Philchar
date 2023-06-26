@@ -3,7 +3,7 @@ import React from "react";
 const Footer = () => {
   return (
     <div>
-      <footer class="footer-distributed">
+      <footer class="footer-distributed" style={{ backgroundColor: "black" }}>
         <div class="footer-left">
           <h3>
             Phil<span>Char</span>
@@ -23,7 +23,9 @@ const Footer = () => {
             <a href="#">Contact</a>
           </p>
 
-          <p class="footer-company-name">PhilChar © 2015</p>
+          <p class="footer-company-name" style={{ color: "white" }}>
+            PhilChar © 2015
+          </p>
         </div>
 
         <div class="footer-center">
