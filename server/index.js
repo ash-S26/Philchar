@@ -171,12 +171,13 @@ app.post("/signin", async (req, res) => {
   console.log(req.body);
   let { email, password } = req.body;
 
-  let user = await Ngo.findOne({ email: email });
-  console.log("After ngo - ", user);
+  let user = await Ngo.findOne({ ngoemail: email });
+  // console.log("After ngo - ", user);
   if (user) {
-    if (user.password == password) {
+    if (user.ngopassword == password) {
       payload = {
         name: user.ngoname,
+        type: "ngo",
         id: user._id,
       };
 
@@ -198,6 +199,7 @@ app.post("/signin", async (req, res) => {
       if (user.password == password) {
         payload = {
           name: user.name,
+          type: "phil",
           id: user._id,
         };
 
@@ -330,6 +332,152 @@ app.post("/capture/:paymentId", auth, async (req, res) => {
 app.get("/userprof", auth, (req, res) => {
   console.log(req);
   res.json({ code: 200, data: { id: req.userID } });
+});
+
+app.post("/userprof", auth, async (req, res) => {
+  console.log(req.userID);
+  console.log("Update req :- ", req.body);
+  let success = false;
+  let {
+    ngoemail,
+    ngopassword,
+    ngoadd1,
+    ngoadd2,
+    ngocity,
+    ngostate,
+    ngozip,
+    ngotags,
+    videos,
+    images,
+    qrimages,
+    works,
+    ngoaccountnumber,
+    ngoifsc,
+    ngobranch,
+    ngoprimaryphone,
+    ngosecondaryphone,
+    email,
+    password,
+    phone,
+  } = req.body;
+  payload = {};
+  let item = await Ngo.findById({ _id: req.userID });
+  if (item != null) {
+    if (ngoemail.length > 0) {
+      payload["ngoemail"] = ngoemail;
+    }
+    if (ngopassword.length > 0) {
+      payload["ngopassword"] = ngopassword;
+    }
+    if (ngoadd1.length > 0) {
+      payload["ngoadd1"] = ngoadd1;
+    }
+    if (ngoadd2.length > 0) {
+      payload["ngoadd2"] = ngoadd2;
+    }
+    if (ngocity.length > 0) {
+      payload["ngocity"] = ngocity;
+    }
+    if (ngostate.length > 0) {
+      payload["ngostate"] = ngostate;
+    }
+    if (ngozip.length > 0) {
+      payload["ngozip"] = ngozip;
+    }
+    if (ngotags.length > 0) {
+      let tags = item.ngotags;
+      for (x in ngotags) {
+        let found = 1;
+        for (y in tags) {
+          if (x == y) found = 0;
+        }
+        if (found) tags.push(x);
+      }
+      payload["ngotags"] = tags;
+    }
+    if (video.length > 0) {
+      payload["video"] = video;
+    }
+    if (images.length > 0) {
+      payload["images"] = images;
+    }
+    if (qrimages.length > 0) {
+      payload["qrimages"] = qrimages;
+    }
+    if (works.length > 0) {
+      new_works = item.works;
+      for (work in works) new_works.push(work);
+      payload["works"] = new_works;
+    }
+    if (ngoaccountnumber.length > 0) {
+      payload["ngoaccountnumber"] = ngoaccountnumber;
+    }
+    if (ngoifsc.length > 0) {
+      payload["ngoifsc"] = ngoifsc;
+    }
+    if (ngobranch.length > 0) {
+      payload["ngobranch"] = ngobranch;
+    }
+    if (ngoprimaryphone.length > 0) {
+      payload["ngoprimaryphone"] = ngoprimaryphone;
+    }
+    if (ngosecondaryphone.length > 0) {
+      payload["ngosecondaryphone"] = ngosecondaryphone;
+    }
+
+    let updated = await Ngo.findOneAndUpdate(
+      { _id: req.userID },
+      { $set: payload }
+    );
+    if (updated != null) {
+      success = true;
+    }
+  } else {
+    item = await Phil.findById({ _id: req.userID });
+    if (item) {
+      if (email.length > 0) {
+        payload["email"] = email;
+      }
+      if (phone.length > 0) {
+        payload["phone"] = phone;
+      }
+      if (password.length > 0) {
+        payload["password"] = password;
+      }
+      if (works.length > 0) {
+        new_works = item.works;
+        for (work in works) {
+          console.log(works[work]);
+          new_works.push(works[work]);
+        }
+        payload["works"] = new_works;
+      }
+      if (ngotags.length > 0) {
+        ngotags = ngotags.split(" ");
+        let tags = item.tags;
+        for (x in ngotags) {
+          let found = 1;
+          for (y in tags) {
+            if (ngotags[x] == tags[y]) found = 0;
+          }
+          if (found) tags.push(ngotags[x]);
+        }
+        payload["tags"] = tags;
+      }
+      // console.log(payload);
+      updated = await Phil.findOneAndUpdate(
+        { _id: req.userID },
+        { $set: payload },
+        { new: true }
+      );
+      if (updated != null) {
+        success = true;
+      }
+    }
+  }
+  if (success)
+    res.json({ code: 200, data: { id: req.userID, updated: updated } });
+  else res.json({ code: 409, data: { error: "some error occured" } });
 });
 
 ////////////////////////////////////////////////////////////////////////////////

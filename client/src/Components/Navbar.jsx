@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import CountUp from "react-countup";
 
 const Navbar = () => {
   const [indicate, setindicate] = useState("signin");
@@ -54,6 +55,7 @@ const Navbar = () => {
     setid("");
     navigate("/");
     localStorage.removeItem("token");
+    localStorage.removeItem("user");
     window.location.reload(true);
   };
 
@@ -70,6 +72,7 @@ const Navbar = () => {
               fontWeight: "1000",
               fontSize: "large",
               textDecoration: "none",
+              color: "rgb(255, 87, 34)",
             }}
             class="nav-link"
             to={"/"}
@@ -86,6 +89,7 @@ const Navbar = () => {
               fontWeight: "1000",
               fontSize: "large",
               textDecoration: "none",
+              color: "rgb(255, 87, 34)",
             }}
             class="nav-link"
             to={`/edit/${id}`}
@@ -103,6 +107,7 @@ const Navbar = () => {
               fontWeight: "1000",
               fontSize: "large",
               textDecoration: "none",
+              color: "rgb(255, 87, 34)",
             }}
             class="nav-link"
             to={"/auth"}
@@ -125,8 +130,9 @@ const Navbar = () => {
           style={{
             fontWeight: "1000",
             fontSize: "xx-large",
-            fontWeight: "1200",
+            fontWeight: "bold",
             textDecoration: "none",
+            color: "rgb(255, 87, 34)",
           }}
           class="nav-link"
           to={"/"}
@@ -156,7 +162,7 @@ const Navbar = () => {
               class="nav-item"
             >
               <Link
-                style={{ textDecoration: "none" }}
+                style={{ textDecoration: "none", color: "rgb(255, 87, 34)" }}
                 class="nav-link"
                 to={"/ngos"}
               >
@@ -170,6 +176,7 @@ const Navbar = () => {
                   fontWeight: "1000",
                   fontSize: "large",
                   textDecoration: "none",
+                  color: "rgb(255, 87, 34)",
                 }}
                 class="nav-link"
                 to={"/registerngo"}

@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const SignIn = () => {
   const [email, setemail] = useState("");
   const [password, setpassword] = useState("");
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  console.log(pathname);
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -28,6 +31,11 @@ const SignIn = () => {
     console.log(data.token);
     let token = data.token;
     localStorage.setItem("token", token);
+    if (pathname.includes("phil")) {
+      localStorage.setItem("user", "phil");
+    } else {
+      localStorage.setItem("user", "ngo");
+    }
 
     navigate("/");
     window.location.reload(true);
