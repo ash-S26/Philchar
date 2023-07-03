@@ -16,6 +16,8 @@ env:
   RAZORPAY_SECRET: ${{secrets.RAZORPAY_SECRET}}
   REACT_APP_BACKEND_URL: ${{secrets.REACT_APP_BACKEND_URL}}
   REACT_APP_RAZORPAY_KEY: ${{secrets.REACT_APP_RAZORPAY_KEY}}
+  ORIGIN: ${{secrets.ORIGIN}}
+  REACT_APP_CHAT_HOST: ${{secrets.REACT_APP_CHAT_HOST}}
   
 
 # This is the workflow that is being run.
@@ -35,6 +37,7 @@ jobs:
           npm install
           export REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
           export REACT_APP_RAZORPAY_KEY=$REACT_APP_RAZORPAY_KEY
+          export REACT_APP_CHAT_HOST=$REACT_APP_CHAT_HOST
 
       # Install dependencies, export environment variables to be used by application and run tests for the server application
       - name: Install and Test Server
@@ -46,6 +49,7 @@ jobs:
           export MONGODB_USERNAME=$MONGODB_USERNAME
           export RAZORPAY_KEY=$RAZORPAY_KEY
           export RAZORPAY_SECRET=$RAZORPAY_SECRET
+          export ORIGIN=$ORIGIN
          
 
       # Build a Docker image for the client application
