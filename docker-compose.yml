@@ -16,6 +16,7 @@ services:
       - CHOKIDAR_USEPOLLING=true
       - REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL}
       - REACT_APP_RAZORPAY_KEY=${REACT_APP_RAZORPAY_KEY}
+      - REACT_APP_CHAT_HOST=${REACT_APP_CHAT_HOST}
 
   server:
     image: ashs26/philchar-server-app:server-latest
@@ -25,3 +26,4 @@ services:
       - MONGODB_USERNAME=${MONGODB_USERNAME}
       - RAZORPAY_KEY=${RAZORPAY_KEY}
       - RAZORPAY_SECRET=${RAZORPAY_SECRET}
+      - ORIGIN=${ORIGIN}
