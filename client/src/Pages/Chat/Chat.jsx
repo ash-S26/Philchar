@@ -30,6 +30,7 @@ const Chat = () => {
     if (localStorage.getItem("token")) {
       console.log("Initialize socket");
       socket.current = io(`${process.env.REACT_APP_CHAT_HOST}`);
+      console.log("Connecting at - ", process.env.REACT_APP_CHAT_HOST);
       socket.current.emit("add-user", id);
       console.log(socket.current);
     }
