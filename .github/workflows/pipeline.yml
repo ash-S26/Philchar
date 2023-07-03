@@ -97,3 +97,4 @@ jobs:
           version_label: "version-${{ github.run_number }}"
           deployment_package: docker-compose.yml
           use_existing_version_if_available: true
+          wait_for_environment_recovery: 3000
