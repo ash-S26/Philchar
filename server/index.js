@@ -9,6 +9,9 @@ var path = require("path");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const auth = require("./middleware/auth");
+const socket = require("socket.io");
+const Messages = require("./models/message");
+const Donation = require("./models/donation");
 /////////////////////////////////////////
 
 const JWT_SECRET = "secret";
@@ -60,6 +63,7 @@ const KEY_ID = process.env.RAZORPAY_KEY;
 const KEY_SECRET = process.env.KEY_SECRET;
 
 const Razorpay = require("razorpay");
+const { log } = require("console");
 const instance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY,
   key_secret: process.env.RAZORPAY_SECRET,
@@ -96,7 +100,6 @@ app.get("/", function (req, res) {
 });
 
 app.post("/registerngo", (req, res) => {
-  console.log(req.body);
   //   console.log(req.files, 5);
   const taglist = req.body.ngotags.split(" ");
   let result = Ngo.create({
@@ -128,14 +131,12 @@ app.post("/registerngo", (req, res) => {
 });
 
 app.post("/phil/signup", async (req, res) => {
-  console.log(req.body);
   let { name, phone, email, password, tags, vision, works } = req.body;
 
   let phils = await Phil.findOne({ email: email });
   if (phils == null) {
     phils = await Ngo.findOne({ ngoemail: email });
   }
-  console.log(phils, email);
 
   if (phils == null) {
     const taglist = req.body.tags.split(" ");
@@ -168,7 +169,6 @@ app.post("/phil/signup", async (req, res) => {
 });
 
 app.post("/signin", async (req, res) => {
-  console.log(req.body);
   let { email, password } = req.body;
 
   let user = await Ngo.findOne({ ngoemail: email });
@@ -236,7 +236,6 @@ app.get("/allngos", auth, async (req, res) => {
 });
 
 app.post("/ngo/name", auth, async (req, res) => {
-  console.log(req.body);
   let ngos = await Ngo.find({
     ngoname: { $regex: req.body.ngoname },
   });
@@ -271,8 +270,37 @@ app.post("/ngo/tag", auth, async (req, res) => {
   }
 });
 
+// total ngos, phils, donation, states
+app.get("/homepagedata", async (req, res) => {
+  const totalphils = await Phil.estimatedDocumentCount();
+  const totalngos = await Ngo.estimatedDocumentCount();
+  const totalstate = await Ngo.distinct("ngostate");
+  let totaldonation = 0;
+  const temp = await Donation.aggregate([
+    {
+      $group: {
+        _id: null,
+        totaldonation: { $sum: "$amount" },
+      },
+    },
+  ]);
+
+  totaldonation = temp[0].totaldonation;
+  res.json({
+    data: {
+      details: {
+        totalphils: totalphils,
+        totalngos: totalngos,
+        totalstate: totalstate.length,
+        totaldonation: totaldonation,
+      },
+      status: 200,
+    },
+  });
+  // console.log(totalphils, totalngos, totalstate, totaldonation);
+});
+
 app.get("/ngo/:id", auth, async (req, res) => {
-  console.log(req.user, req.userID);
   let ngo = await Ngo.findOne({ _id: req.params.id });
   // console.log(ngo);
   if (ngo) {
@@ -321,22 +349,29 @@ app.get("/order/:amount", auth, (req, res) => {
 });
 
 app.post("/capture/:paymentId", auth, async (req, res) => {
-  console.log("payment");
-  console.log(req.params);
-
-  res.status(200).json({
-    message: "Okkk",
+  console.log("payment sucess");
+  const { amount, donor, to } = req.body;
+  const donated = await Donation.create({
+    amount: amount,
+    donor: donor,
+    to: to,
+    users: [donor, to],
   });
+
+  // console.log(donated);
+  if (donated)
+    res.json({ data: { status: 200, message: "Donated Successfully" } });
+  else
+    res.json({
+      data: { status: 400, message: "Error Occourded while donating" },
+    });
 });
 
 app.get("/userprof", auth, (req, res) => {
-  console.log(req);
   res.json({ code: 200, data: { id: req.userID } });
 });
 
 app.post("/userprof", auth, async (req, res) => {
-  console.log(req.userID);
-  console.log("Update req :- ", req.body);
   let success = false;
   let {
     ngoemail,
@@ -480,9 +515,100 @@ app.post("/userprof", auth, async (req, res) => {
   else res.json({ code: 409, data: { error: "some error occured" } });
 });
 
+app.get("/listallchatngos", auth, async (req, res) => {
+  let allchats = await Ngo.find({ _id: { $ne: req.userID } }).select({
+    ngoname: 1,
+    _id: 1,
+    ngotags: 1,
+  });
+
+  const philchats = await Phil.find({ _id: { $ne: req.userID } }).select({
+    name: 1,
+    _id: 1,
+  });
+
+  allchats = [...allchats, ...philchats];
+
+  res.json({
+    data: { message: "Got request", allchats: allchats },
+  });
+});
+
+app.post("/getngodetailsforchat", auth, async (req, res) => {
+  let details = await Ngo.findById(req.body.id).select({
+    ngoname: 1,
+    ngoprimaryphone: 1,
+    ngocity: 1,
+    ngostate: 1,
+  });
+
+  if (details == null) {
+    details = await Phil.findById(req.body.id).select({
+      name: 1,
+    });
+  }
+
+  res.send({ data: { status: 200, ngodetails: details } });
+});
+
+app.post("/messagesend", auth, async (req, res) => {
+  const newmsg = Messages.create({
+    text: req.body.message,
+    users: [req.userID, req.body.to],
+    sender: req.userID,
+  });
+
+  if (newmsg) {
+    res.json({ data: { status: 200, newmsg: newmsg } });
+  } else {
+    res.json({ data: { status: 500, newmsg: "error occoured" } });
+  }
+});
+
+app.post("/getallchatsforngos", auth, async (req, res) => {
+  const chats = await Messages.find({
+    users: { $all: [req.body.to, req.userID] },
+  }).sort({ updatedAt: 1 });
+
+  const modifiedmsg = chats.map((msg) => {
+    return {
+      _id: msg._id,
+      text: msg.text,
+      sender: msg.sender,
+      fromself: msg.sender == req.userID,
+    };
+  });
+  // console.log("chats : ", modifiedmsg);
+  res.send({ data: { chats: modifiedmsg } });
+});
+
 ////////////////////////////////////////////////////////////////////////////////
 const port = process.env.PORT || 5000;
 
-app.listen(port, function () {
+const server = app.listen(port, function () {
   console.log("Server started on port 5000.");
+});
+
+const io = socket(server, {
+  cors: {
+    origin: "*",
+  },
+});
+
+global.onlineUsers = new Map();
+
+io.on("connection", (socket) => {
+  // console.log(socket);
+  global.chatSocket = socket;
+  socket.on("add-user", (userId) => {
+    onlineUsers.set(userId, socket.id);
+  });
+
+  socket.on("send-msg", (data) => {
+    // console.log("send msg triggered");
+    const sendUserSocket = onlineUsers.get(data.to);
+    if (sendUserSocket) {
+      socket.to(sendUserSocket).emit("msg-recieve", data.message);
+    }
+  });
 });

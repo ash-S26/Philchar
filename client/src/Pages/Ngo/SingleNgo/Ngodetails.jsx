@@ -10,7 +10,8 @@ const Ngodetails = () => {
   const { id } = useParams();
   const [ngodata, setngodata] = useState();
   const [isloading, setloading] = useState(true);
-  const [amount, setamount] = useState("");
+  const [amount, setamount] = useState(0);
+  const [user, setuser] = useState("");
 
   axios.defaults.headers.common["x-auth-token"] = localStorage.getItem("token");
 
@@ -19,9 +20,16 @@ const Ngodetails = () => {
       .get(`${process.env.REACT_APP_BACKEND_URL}ngo/${id}`)
       .then((response) => {
         const data = response.data.data;
-        console.log(data);
+
         setngodata(data);
         setloading(false);
+      });
+
+    axios
+      .get(`${process.env.REACT_APP_BACKEND_URL}userprof`)
+      .then((response) => {
+        const data = response.data.data;
+        setuser(data.id);
       });
   }, []);
 
@@ -203,7 +211,12 @@ const Ngodetails = () => {
             placeholder="1000 (amount is in rupees)"
             style={{ width: "30%", marginLeft: "35%" }}
           />
-          <Payment ngoname={ngodata.ngoname} amount={amount} />
+          <Payment
+            ngoname={ngodata.ngoname}
+            ngoid={ngodata._id}
+            amount={amount}
+            sender={user}
+          />
 
           <h2 style={{ display: "flex", justifyContent: "center" }}>
             Scan QR To Donate

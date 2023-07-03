@@ -33,7 +33,7 @@ const Navbar = () => {
         setid(data.data.id);
         setindicate("logout");
       } else {
-        alert("Something is wrong with navbar");
+        navigate("/auth");
       }
       setloading(false);
     }
@@ -95,6 +95,23 @@ const Navbar = () => {
             to={`/edit/${id}`}
           >
             Edit Profile
+          </Link>
+        </li>
+      );
+      content.push(
+        <li class="nav-item">
+          <Link
+            style={{
+              paddingLeft: "20px",
+              fontWeight: "1000",
+              fontSize: "large",
+              textDecoration: "none",
+              color: "rgb(255, 87, 34)",
+            }}
+            class="nav-link"
+            to={`/chat/${id}`}
+          >
+            Chat
           </Link>
         </li>
       );

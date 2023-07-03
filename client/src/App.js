@@ -9,6 +9,7 @@ import SignInUp from "./Pages/SingnInUp/SignInUp";
 import SignIn from "./Pages/SignIn/SignIn";
 import SignUp from "./Pages/SignUp/SignUp";
 import Profile from "./Pages/Profile/Profile";
+import Chat from "./Pages/Chat/Chat";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
           <Route path="/phil/signin" element={<SignIn />} />
           <Route path="/ngo/signin" element={<SignIn />} />
           <Route path="/edit/:id" element={<Profile />} />
+          <Route path="/chat/:id" element={<Chat />} />
         </Routes>
       </Router>
     </div>

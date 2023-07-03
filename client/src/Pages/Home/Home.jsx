@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import "./css/animate.css";
 import "./css/bootstrap.css";
 import "./css/superfish.css";
@@ -12,6 +12,46 @@ import CountUp from "react-countup";
 import Count from "../../Components/Counter/Count";
 
 const Home = () => {
+  const [statistic, setstatistic] = useState(undefined);
+  const [isloading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    async function getstats() {
+      const response = await fetch(
+        `${process.env.REACT_APP_BACKEND_URL}homepagedata`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            "Access-Control-Allow-Origin": "*",
+            "x-auth-token": localStorage.getItem("token"),
+          },
+        }
+      );
+
+      const { data } = await response.json();
+      setstatistic(data.details);
+    }
+
+    setIsLoading(true);
+    getstats();
+    console.log(statistic);
+
+    setIsLoading(false);
+    console.log(statistic);
+  }, []);
+
+  if (isloading) {
+    return (
+      <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div class="fh5co-hero">
@@ -242,28 +282,28 @@ const Home = () => {
           }}
         >
           <Count
-            endCount={100}
+            endCount={statistic ? statistic.totalngos : 0}
             text={"Registered NGOs"}
             src={
               "https://assets.vakilsearch.com/live-images/ngo-registration.jpg.jpg"
             }
           />
           <Count
-            endCount={100}
+            endCount={statistic ? statistic.totalphils : 0}
             text={"Total Philantrophist"}
             src={
               "https://cdnwp.tonyrobbins.com/wp-content/uploads/2018/08/jk-rowling-philanthropist-550x368.jpg"
             }
           />
           <Count
-            endCount={100}
+            endCount={statistic ? statistic.totalstate : 0}
             text={"Our Spread Across States"}
             src={
               "https://thumbs.dreamstime.com/b/cute-earth-character-waving-hand-cartoon-mascot-globe-personage-save-planet-concept-isolated-vector-illustration-177087114.jpg"
             }
           />
           <Count
-            endCount={100}
+            endCount={statistic ? statistic.totaldonation : 0}
             text={"Total Donation"}
             src={
               "https://img.freepik.com/free-vector/people-carrying-donation-charity-related-icons_53876-43091.jpg"

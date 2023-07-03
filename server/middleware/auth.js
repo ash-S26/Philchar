@@ -7,14 +7,16 @@ module.exports = function (req, res, next) {
 
   // Check if no token
   if (!token) {
-    return res.json({ code: 401, msg: "No token, authorization denied" });
+    return res.json({
+      data: { code: 401, msg: "No token, authorization denied" },
+    });
   }
 
   // Verify token
   try {
     jwt.verify(token, JWT_SECRET, (error, decoded) => {
       if (error) {
-        return res.json({ code: 401, msg: "Token is not valid" });
+        return res.json({ data: { code: 401, msg: "Server Error" } });
       } else {
         // console.log("decoded - ", decoded);
 
@@ -25,6 +27,6 @@ module.exports = function (req, res, next) {
     });
   } catch (err) {
     console.error("something wrong with auth middleware");
-    res.json({ code: 401, msg: "Server Error" });
+    res.json({ data: { code: 401, msg: "Server Error" } });
   }
 };
