@@ -38,6 +38,7 @@ jobs:
           export REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL
           export REACT_APP_RAZORPAY_KEY=$REACT_APP_RAZORPAY_KEY
           export REACT_APP_CHAT_HOST=$REACT_APP_CHAT_HOST
+          echo $REACT_APP_BACKEND_URL
 
       # Install dependencies, export environment variables to be used by application and run tests for the server application
       - name: Install and Test Server
@@ -50,6 +51,7 @@ jobs:
           export RAZORPAY_KEY=$RAZORPAY_KEY
           export RAZORPAY_SECRET=$RAZORPAY_SECRET
           export ORIGIN=$ORIGIN
+          echo $ORIGIN
          
 
       # Build a Docker image for the client application
