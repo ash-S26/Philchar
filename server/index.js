@@ -528,7 +528,7 @@ app.get("/listallchatngos", auth, async (req, res) => {
   });
 
   allchats = [...allchats, ...philchats];
-
+  console.log(allchats);
   res.json({
     data: { message: "Got request", allchats: allchats },
   });
@@ -592,20 +592,23 @@ const server = app.listen(port, function () {
 const io = socket(server, {
   cors: {
     origin: "*",
+    methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
 global.onlineUsers = new Map();
 
 io.on("connection", (socket) => {
-  // console.log(socket);
+  console.log("socket - ", socket);
   global.chatSocket = socket;
   socket.on("add-user", (userId) => {
     onlineUsers.set(userId, socket.id);
+    console.log(userId, socket.id);
   });
 
   socket.on("send-msg", (data) => {
-    // console.log("send msg triggered");
+    console.log("send msg triggered");
     const sendUserSocket = onlineUsers.get(data.to);
     if (sendUserSocket) {
       socket.to(sendUserSocket).emit("msg-recieve", data.message);
