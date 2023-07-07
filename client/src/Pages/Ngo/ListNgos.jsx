@@ -49,10 +49,12 @@ const ListNgos = () => {
       const list = data.data;
       setallngos(list);
       setsearchlist(list);
-      console.log("all ngos - ", allngos);
-      setloading(false);
+      console.log("all ngos - ", list);
     }
-    fetchallngos();
+    setloading(true);
+    fetchallngos().then(() => {
+      setloading(false);
+    });
   }, []);
 
   const handlesearch = async (e) => {
@@ -151,16 +153,6 @@ const ListNgos = () => {
     // setsearchbytags("");
   };
 
-  if (isloading) {
-    return (
-      <div class="d-flex justify-content-center">
-        <div class="spinner-border" role="status">
-          <span class="sr-only">Loading...</span>
-        </div>
-      </div>
-    );
-  }
-
   const gettags = (key) => {
     var content = [];
     var i = 0;
@@ -176,6 +168,7 @@ const ListNgos = () => {
   };
 
   const getallngos = () => {
+    console.log("searchlist - ", searchlist);
     var content = [];
     var i = 0;
 
@@ -233,6 +226,16 @@ const ListNgos = () => {
     }
     return content;
   };
+
+  if (isloading) {
+    return (
+      <div class="d-flex justify-content-center">
+        <div class="spinner-border" role="status">
+          <span class="sr-only">Loading...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
@@ -296,11 +299,7 @@ const ListNgos = () => {
       </form>
       <br />
 
-      {searchlist
-        ? () => {
-            getallngos();
-          }
-        : null}
+      {getallngos()}
       <ToastContainer />
     </div>
   );
