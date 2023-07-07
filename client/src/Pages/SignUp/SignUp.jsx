@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import NgoTags from "../../Components/NgoTags";
+import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SignUp = () => {
   const [name, setname] = useState("");
@@ -9,6 +12,7 @@ const SignUp = () => {
   const [tags, settags] = useState("");
   const [vision, setvision] = useState("");
   const [works, setworks] = useState([""]);
+  const navigate = useNavigate();
 
   const handleAddClick = (e) => {
     const list = [...works];
@@ -29,8 +33,36 @@ const SignUp = () => {
     setworks(list);
   };
 
+  async function handlevalidation() {
+    if (
+      name.length == 0 ||
+      email.length == 0 ||
+      phone.length < 10 ||
+      password.length == 0 ||
+      tags.length == 0 ||
+      vision.length == 0
+    ) {
+      toast.error(
+        "All details are mandatory and should follow example details.",
+        {
+          position: "bottom-right",
+          autoClose: 8000,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "dark",
+        }
+      );
+      return false;
+    }
+  }
+
   const handlePhilFormSubmit = async (e) => {
     e.preventDefault();
+
+    const verify = await handlevalidation();
+
+    if (verify == false) return;
+
     const response = await fetch(
       `${process.env.REACT_APP_BACKEND_URL}phil/signup`,
       {
@@ -54,8 +86,35 @@ const SignUp = () => {
     const data = await response.json();
     console.log(data.data);
 
-    if (data.data == "User Already exists") alert("User Already exists");
-    else if (data.data == "Error user creation") alert("Error user creation");
+    if (data.data == "User Already exists") {
+      toast.error("User Already exists", {
+        position: "bottom-right",
+        autoClose: 8000,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+      });
+    } else if (data.data == "Error user creation") {
+      toast.error("Error occoured in user creation", {
+        position: "bottom-right",
+        autoClose: 8000,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+      });
+    } else {
+      toast.success(`SignUp Successful ${name}`, {
+        position: "bottom-right",
+        autoClose: 8000,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+      });
+    }
+
+    setTimeout(() => {
+      navigate("/auth");
+    }, 3000);
   };
 
   return (
@@ -269,6 +328,7 @@ const SignUp = () => {
           Sign Up
         </button>
       </form>
+      <ToastContainer />
     </div>
   );
 };

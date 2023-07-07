@@ -282,28 +282,28 @@ const Home = () => {
           }}
         >
           <Count
-            endCount={statistic ? statistic.totalngos : 0}
+            endCount={statistic ? statistic.totalngos : 5}
             text={"Registered NGOs"}
             src={
               "https://assets.vakilsearch.com/live-images/ngo-registration.jpg.jpg"
             }
           />
           <Count
-            endCount={statistic ? statistic.totalphils : 0}
+            endCount={statistic ? statistic.totalphils : 7}
             text={"Total Philantrophist"}
             src={
               "https://cdnwp.tonyrobbins.com/wp-content/uploads/2018/08/jk-rowling-philanthropist-550x368.jpg"
             }
           />
           <Count
-            endCount={statistic ? statistic.totalstate : 0}
+            endCount={statistic ? statistic.totalstate : 5}
             text={"Our Spread Across States"}
             src={
               "https://thumbs.dreamstime.com/b/cute-earth-character-waving-hand-cartoon-mascot-globe-personage-save-planet-concept-isolated-vector-illustration-177087114.jpg"
             }
           />
           <Count
-            endCount={statistic ? statistic.totaldonation : 0}
+            endCount={statistic ? statistic.totaldonation : 10000}
             text={"Total Donation"}
             src={
               "https://img.freepik.com/free-vector/people-carrying-donation-charity-related-icons_53876-43091.jpg"

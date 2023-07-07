@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import CountUp from "react-countup";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Navbar = () => {
   const [indicate, setindicate] = useState("signin");
@@ -33,7 +35,7 @@ const Navbar = () => {
         setid(data.data.id);
         setindicate("logout");
       } else {
-        navigate("/auth");
+        navigate("/");
       }
       setloading(false);
     }
@@ -51,12 +53,23 @@ const Navbar = () => {
   }
 
   const handleLogout = () => {
+    toast.success(`Logout Successfully.`, {
+      position: "top-right",
+      autoClose: 2000,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "dark",
+    });
+
     setindicate("signin");
     setid("");
-    navigate("/");
+
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    window.location.reload(true);
+    setTimeout(() => {
+      navigate("/");
+      window.location.reload(true);
+    }, 3000);
   };
 
   const getstatus = () => {
@@ -205,6 +218,7 @@ const Navbar = () => {
           </ul>
         </div>
       </nav>
+      <ToastContainer />
     </div>
   );
 };

@@ -66,13 +66,7 @@ const Payment = ({ ngoname, amount, sender, ngoid }) => {
   };
 
   return (
-    <div
-      style={{
-        backgroundRepeat: "no-repeat",
-        backgroundSize: "cover",
-        backgroundImage: "url('https://wallpaperaccess.com/full/1768590.jpg')",
-      }}
-    >
+    <div>
       <button
         onClick={(e) => paymentHandler(e)}
         style={{

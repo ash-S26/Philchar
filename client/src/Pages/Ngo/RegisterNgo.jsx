@@ -3,6 +3,8 @@ import NgoTags from "../../Components/NgoTags";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../Components/Footer/Footer";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const RegisterNgo = () => {
   const [works, setworks] = useState([""]);
@@ -26,9 +28,48 @@ const RegisterNgo = () => {
   const [ngotags, setngotags] = useState("");
   var navigate = useNavigate();
 
-  const handleRegisterngo = (e) => {
+  async function handlevalidation() {
+    if (
+      ngotags.length == 0 ||
+      ngozip.length == 0 ||
+      ngostate.length == 0 ||
+      ngocity.length == 0 ||
+      ngoadd1.length == 0 ||
+      ngopassword.length == 0 ||
+      ngoemail.length == 0 ||
+      ngoid.length == 0 ||
+      ngoname.length == 0 ||
+      ngosecondaryphone.length < 10 ||
+      ngoprimaryphone.length < 10 ||
+      ngobranch.length == 0 ||
+      ngoifsc.length == 0 ||
+      ngoaccountnumber.length == 0 ||
+      video.length == 0 ||
+      qrimages.length == 0 ||
+      images.length == 0
+    ) {
+      toast.error(
+        "All details are mandatory and should follow example details.",
+        {
+          position: "bottom-right",
+          autoClose: 8000,
+          pauseOnHover: true,
+          draggable: true,
+          theme: "dark",
+        }
+      );
+      return false;
+    }
+    return true;
+  }
+
+  const handleRegisterngo = async (e) => {
     e.preventDefault();
-    console.log(images);
+    // console.log(images);
+
+    const verify = await handlevalidation();
+
+    if (verify == false) return;
 
     fetch(`${process.env.REACT_APP_BACKEND_URL}registerngo`, {
       method: "POST",
@@ -61,7 +102,35 @@ const RegisterNgo = () => {
       }),
     })
       .then((res) => res.json())
-      .then((data) => console.log(data));
+      .then((data) => {
+        if (data.status == 200) {
+          toast.success(
+            `Thank you, ${ngoname} has been registered successful with us.`,
+            {
+              position: "bottom-right",
+              autoClose: 8000,
+              pauseOnHover: true,
+              draggable: true,
+              theme: "dark",
+            }
+          );
+        } else {
+          toast.error(
+            "Error occoured while registering NGO, please try again!",
+            {
+              position: "bottom-right",
+              autoClose: 8000,
+              pauseOnHover: true,
+              draggable: true,
+              theme: "dark",
+            }
+          );
+        }
+
+        setTimeout(() => {
+          navigate("/auth");
+        }, 2000);
+      });
   };
 
   const handleAddClick = (e) => {
@@ -529,6 +598,7 @@ const RegisterNgo = () => {
         </form>
       </div>
       <Footer />
+      <ToastContainer />
     </div>
   );
 };

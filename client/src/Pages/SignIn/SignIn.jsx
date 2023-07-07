@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const SignIn = () => {
   const [email, setemail] = useState("");
@@ -8,10 +10,37 @@ const SignIn = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  console.log(pathname);
+  async function handlevalidation() {
+    if (email.length == 0) {
+      toast.error("Please enter email address.", {
+        position: "bottom-right",
+        autoClose: 8000,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+      });
+      return false;
+    } else if (password.length == 0) {
+      toast.error("Please enter password.", {
+        position: "bottom-right",
+        autoClose: 8000,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+      });
+      return false;
+    }
+    return true;
+  }
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    const verify = await handlevalidation();
+    console.log(verify);
+    if (verify == false) {
+      return;
+    }
+
     console.log(
       "process.env.REACT_APP_BACKEND_URL - ",
       process.env.REACT_APP_BACKEND_URL
@@ -28,7 +57,24 @@ const SignIn = () => {
       }),
     });
     const data = await response.json();
-    console.log(data.token);
+    if (data.status == 400) {
+      toast.error("Invalid email or password.", {
+        position: "bottom-right",
+        autoClose: 8000,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+      });
+      return;
+    }
+    toast.success("Login Successful.", {
+      position: "bottom-right",
+      autoClose: 8000,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "dark",
+    });
+
     let token = data.token;
     localStorage.setItem("token", token);
     if (pathname.includes("phil")) {
@@ -36,9 +82,10 @@ const SignIn = () => {
     } else {
       localStorage.setItem("user", "ngo");
     }
-
-    navigate("/");
-    window.location.reload(true);
+    setTimeout(() => {
+      navigate("/");
+      window.location.reload(true);
+    }, 3000);
   };
 
   return (
@@ -109,6 +156,7 @@ const SignIn = () => {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

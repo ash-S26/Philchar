@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import NgoTags from "../../Components/NgoTags";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const colors = [
   "#BF9D9D",
@@ -18,6 +20,9 @@ const ListNgos = () => {
   const [searchbytags, setsearchbytags] = useState("");
   const [allngos, setallngos] = useState();
   const [isloading, setloading] = useState(true);
+  const [searchlist, setsearchlist] = useState([]);
+  const [disabled, setdisabled] = useState(false);
+  const [search, setsearch] = useState();
   const navigate = useNavigate();
 
   axios.defaults.headers.common["x-auth-token"] = localStorage.getItem("token");
@@ -40,6 +45,7 @@ const ListNgos = () => {
 
       const list = data.data;
       setallngos(list);
+      setsearchlist(list);
       console.log("all ngos - ", allngos);
       setloading(false);
     }
@@ -47,66 +53,99 @@ const ListNgos = () => {
   }, []);
 
   const handlesearch = async (e) => {
+    setdisabled(true);
+    setsearch(e.target.value);
+    console.log(e.target.value);
     e.preventDefault();
-    console.log(e);
-    if (searchbyname.length > 0) {
-      setloading(true);
-      const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}ngo/name`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "x-auth-token": localStorage.getItem("token"),
-          },
-          body: JSON.stringify({
-            ngoname: searchbyname,
-          }),
-        }
-      );
+    if (e.target.value.length == 0) setsearchlist(allngos);
+    else {
+      let searcharray = [];
+      if (e.target.name == "ngoname") {
+        searcharray = allngos.filter((str) => {
+          if (str.ngoname)
+            return str.ngoname.toLowerCase().includes(e.target.value);
+          else return str.name.toLowerCase().includes(e.target.value);
+        });
+      } else {
+        searcharray = allngos.filter((str) => {
+          let tags = "";
 
-      const data = await response.json();
-      if (data.code == 500) {
-        alert("No Match");
+          for (let tag in str.ngotags) {
+            tags = tags + str.ngotags[tag] + " ";
+          }
+
+          console.log(tags);
+
+          if (tags) return tags.toLowerCase().includes(e.target.value);
+          else return tags.toLowerCase().includes(e.target.value);
+        });
       }
-      const list = data.data;
-      setallngos(list);
 
-      setloading(false);
-    } else if (searchbytags.length > 0) {
-      setloading(true);
-
-      const response = await fetch(
-        `${process.env.REACT_APP_BACKEND_URL}ngo/tag`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-            "x-auth-token": localStorage.getItem("token"),
-          },
-          body: JSON.stringify({
-            ngotags: searchbytags,
-          }),
-        }
-      );
-
-      const data = await response.json();
-      if (data.code == 500) {
-        alert("No Match");
-      }
-      const list = data.data;
-      setallngos(list);
-
-      setloading(false);
-    } else {
-      alert(
-        "please enter name of NGO or search by tags of NGO you are looking for."
-      );
+      console.log(searcharray);
+      setsearchlist(searcharray);
     }
-    setsearchbyname("");
-    setsearchbytags("");
+    setdisabled(false);
+
+    // e.preventDefault();
+    // console.log(e);
+    // if (searchbyname.length > 0) {
+    //   setloading(true);
+    //   const response = await fetch(
+    //     `${process.env.REACT_APP_BACKEND_URL}ngo/name`,
+    //     {
+    //       method: "POST",
+    //       headers: {
+    //         Accept: "application/json",
+    //         "Content-Type": "application/json",
+    //         "x-auth-token": localStorage.getItem("token"),
+    //       },
+    //       body: JSON.stringify({
+    //         ngoname: searchbyname,
+    //       }),
+    //     }
+    //   );
+
+    //   const data = await response.json();
+    //   if (data.code == 500) {
+    //     alert("No Match");
+    //   }
+    //   const list = data.data;
+    //   setallngos(list);
+
+    //   setloading(false);
+    // } else if (searchbytags.length > 0) {
+    //   setloading(true);
+
+    //   const response = await fetch(
+    //     `${process.env.REACT_APP_BACKEND_URL}ngo/tag`,
+    //     {
+    //       method: "POST",
+    //       headers: {
+    //         Accept: "application/json",
+    //         "Content-Type": "application/json",
+    //         "x-auth-token": localStorage.getItem("token"),
+    //       },
+    //       body: JSON.stringify({
+    //         ngotags: searchbytags,
+    //       }),
+    //     }
+    //   );
+
+    //   const data = await response.json();
+    //   if (data.code == 500) {
+    //     alert("No Match");
+    //   }
+    //   const list = data.data;
+    //   setallngos(list);
+
+    //   setloading(false);
+    // } else {
+    //   alert(
+    //     "please enter name of NGO or search by tags of NGO you are looking for."
+    //   );
+    // }
+    // setsearchbyname("");
+    // setsearchbytags("");
   };
 
   if (isloading) {
@@ -137,7 +176,7 @@ const ListNgos = () => {
     var content = [];
     var i = 0;
 
-    for (let key in allngos) {
+    for (let key in searchlist) {
       i++;
       content.push(
         <div
@@ -169,23 +208,23 @@ const ListNgos = () => {
                 paddingTop: "10px",
               }}
             >
-              {allngos[key].ngoname.toUpperCase()}
+              {searchlist[key].ngoname.toUpperCase()}
             </h2>
-            <p class="card-text">{gettags(allngos[key])}</p>
+            <p class="card-text">{gettags(searchlist[key])}</p>
           </div>
           <div class="card-body">
             <h5 class="card-title">
-              {allngos[key].ngocity +
+              {searchlist[key].ngocity +
                 ", " +
-                allngos[key].ngostate +
+                searchlist[key].ngostate +
                 ", " +
-                allngos[key].ngozip}
+                searchlist[key].ngozip}
             </h5>
           </div>
           <Link
-            to={`/ngo/${allngos[key]._id}`}
+            to={`/ngo/${searchlist[key]._id}`}
             class="btn btn-primary"
-          >{`Get More Details About ${allngos[key].ngoname}`}</Link>
+          >{`Get More Details About ${searchlist[key].ngoname}`}</Link>
         </div>
       );
     }
@@ -198,14 +237,13 @@ const ListNgos = () => {
         backgroundImage: "url('https://wallpaperaccess.com/full/1768590.jpg')",
         marginTop: "-20px",
         padding: "100px",
-        paddingTop: "20px",
+        paddingTop: "0px",
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       <NgoTags />
-      <form
-        style={{ paddingTop: "20px", color: "white" }}
-        onSubmit={handlesearch}
-      >
+      <form style={{ paddingTop: "20px", color: "white" }}>
         <div
           class="form-group"
           style={{ padding: "30px", paddingBottom: "0px" }}
@@ -213,10 +251,11 @@ const ListNgos = () => {
           <label for="exampleInputEmail1">Search NGO By Name</label>
           <input
             onChange={(e) => {
-              setsearchbyname(e.target.value);
+              handlesearch(e);
             }}
-            value={searchbyname}
+            disabled={disabled}
             type="text"
+            name="ngoname"
             class="form-control"
             placeholder="Goonj"
           />
@@ -225,17 +264,18 @@ const ListNgos = () => {
           <label for="exampleInputPassword1">Search NGOs By Tag</label>
           <input
             onChange={(e) => {
-              setsearchbytags(e.target.value);
+              handlesearch(e);
             }}
-            value={searchbytags}
+            disabled={disabled}
             type="text"
+            name="tags"
             class="form-control"
             autoComplete="false"
             placeholder="Tags must be space seperated, All tags can be seen at page top. Ex- Children Disaster"
           />
         </div>
 
-        <input
+        {/* <input
           type="submit"
           class="btn btn-primary"
           style={{
@@ -249,11 +289,12 @@ const ListNgos = () => {
             paddingBottom: "30px",
           }}
           value={"Search"}
-        />
+        /> */}
       </form>
       <br />
 
       {getallngos()}
+      <ToastContainer />
     </div>
   );
 };

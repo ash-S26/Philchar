@@ -3,6 +3,8 @@ import NgoTags from "../../Components/NgoTags";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../Components/Footer/Footer";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Profile = () => {
   const who = localStorage.getItem("user");
@@ -70,7 +72,28 @@ const Profile = () => {
       }),
     })
       .then((res) => res.json())
-      .then((data) => console.log(data));
+      .then((data) => {
+        if (data.code == 200) {
+          toast.success("Updated your profile", {
+            position: "bottom-right",
+            autoClose: 8000,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "dark",
+          });
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
+        } else {
+          toast.error("Update Unsuccessful, please try again!", {
+            position: "bottom-right",
+            autoClose: 8000,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "dark",
+          });
+        }
+      });
   };
 
   const handleAddClick = (e) => {
@@ -554,6 +577,7 @@ const Profile = () => {
           value={"Update"}
         />
       </form>
+      <ToastContainer />
     </div>
   );
 };

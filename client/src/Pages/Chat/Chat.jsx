@@ -3,6 +3,8 @@ import "./Chat.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { io } from "socket.io-client";
 import { v4 as uuidv4 } from "uuid";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Chat = () => {
   const [search, setSearch] = useState("");
@@ -43,6 +45,18 @@ const Chat = () => {
 
   const handleMessageSubmit = async (e) => {
     e.preventDefault();
+
+    if (message.length == 0) {
+      toast.error("Please type some message to send", {
+        position: "bottom-right",
+        autoClose: 8000,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+      });
+      return;
+    }
+
     const response = await fetch(
       `${process.env.REACT_APP_BACKEND_URL}messagesend`,
       {
@@ -80,7 +94,14 @@ const Chat = () => {
         message: message,
       });
     } else {
-      console.log("Failed to post message");
+      toast.error("Some error occoured.", {
+        position: "bottom-right",
+        autoClose: 8000,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+      });
+      navigate("/");
     }
 
     setMessage("");
@@ -519,6 +540,7 @@ const Chat = () => {
           )}
         </div>
       </div>
+      <ToastContainer />
     </div>
   ) : null;
 };

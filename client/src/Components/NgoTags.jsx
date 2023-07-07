@@ -2,7 +2,7 @@ import React from "react";
 
 const NgoTags = () => {
   return (
-    <div>
+    <div style={{ paddingTop: "20px" }}>
       <div
         style={{
           marginTop: "20px",

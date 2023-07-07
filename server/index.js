@@ -99,10 +99,10 @@ app.get("/", function (req, res) {
   res.send("Sever");
 });
 
-app.post("/registerngo", (req, res) => {
+app.post("/registerngo", async (req, res) => {
   //   console.log(req.files, 5);
   const taglist = req.body.ngotags.split(" ");
-  let result = Ngo.create({
+  let result = await Ngo.create({
     ngoname: req.body.ngoname,
     ngoid: req.body.ngoid,
     ngoemail: req.body.ngoemail,
@@ -124,9 +124,9 @@ app.post("/registerngo", (req, res) => {
     ngobranch: req.body.ngobranch,
   });
   if (result) {
-    res.send({ code: 200, message: "Upload Success" });
+    res.send({ status: 200, message: "Upload Success" });
   } else {
-    res.send({ code: 500, message: "Upload Err" });
+    res.send({ status: 500, message: "Upload Err" });
   }
 });
 
@@ -183,11 +183,12 @@ app.post("/signin", async (req, res) => {
 
       jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" }, (err, token) => {
         if (err) throw err;
-        res.json({ token: token, email: email });
+        res.json({ token: token, email: email, status: 200 });
       });
     } else {
       res.json({
         message: "Invalid Cred",
+        status: 400,
         data: {
           email: email,
         },
@@ -205,11 +206,12 @@ app.post("/signin", async (req, res) => {
 
         jwt.sign(payload, JWT_SECRET, { expiresIn: "1h" }, (err, token) => {
           if (err) throw err;
-          res.json({ token: token, email: email });
+          res.json({ token: token, email: email, status: 200 });
         });
       } else {
         res.json({
           message: "Invalid Cred",
+          status: 400,
           data: {
             email: email,
           },
@@ -235,40 +237,39 @@ app.get("/allngos", auth, async (req, res) => {
   }
 });
 
-app.post("/ngo/name", auth, async (req, res) => {
-  let ngos = await Ngo.find({
-    ngoname: { $regex: req.body.ngoname },
-  });
-  if (ngos.length >= 0) {
-    res.send({ code: 200, data: ngos });
-  } else {
-    res.send({ code: 500, message: "Server Err" });
-  }
-});
+// app.post("/ngo/name", auth, async (req, res) => {
+//   let ngos = await Ngo.find({
+//     ngoname: { $regex: req.body.ngoname },
+//   });
+//   if (ngos.length >= 0) {
+//     res.send({ code: 200, data: ngos });
+//   } else {
+//     res.send({ code: 500, message: "Server Err" });
+//   }
+// });
 
-app.post("/ngo/tag", auth, async (req, res) => {
-  console.log(req.body);
-  list = req.body.ngotags.split(" ");
-  let ngos = [];
-  for (let x in list) {
-    console.log(x);
-    let ngo = await Ngo.find({ ngotags: { $regex: list[x] } });
-    console.log(ngo.length);
-    ngo.map((item) => {
-      var flag = 1;
-      ngos.map((name) => {
-        if (name.ngoname == item.ngoname) flag = 0;
-      });
-      if (flag) ngos.push(item);
-    });
-  }
-
-  if (ngos.length >= 0) {
-    res.send({ code: 200, data: ngos });
-  } else {
-    res.send({ code: 500, message: "Server Err" });
-  }
-});
+// app.post("/ngo/tag", auth, async (req, res) => {
+//   console.log(req.body);
+//   list = req.body.ngotags.split(" ");
+//   let ngos = [];
+//   for (let x in list) {
+//     console.log(x);
+//     let ngo = await Ngo.find({ ngotags: { $regex: list[x] } });
+//     console.log(ngo.length);
+//     ngo.map((item) => {
+//       var flag = 1;
+//       ngos.map((name) => {
+//         if (name.ngoname == item.ngoname) flag = 0;
+//       });
+//       if (flag) ngos.push(item);
+//     });
+//   }
+//   if (ngos.length >= 0) {
+//     res.send({ code: 200, data: ngos });
+//   } else {
+//     res.send({ code: 500, message: "Server Err" });
+//   }
+// });
 
 // total ngos, phils, donation, states
 app.get("/homepagedata", async (req, res) => {
@@ -301,12 +302,17 @@ app.get("/homepagedata", async (req, res) => {
 });
 
 app.get("/ngo/:id", auth, async (req, res) => {
-  let ngo = await Ngo.findOne({ _id: req.params.id });
   // console.log(ngo);
-  if (ngo) {
-    res.send({ code: 200, data: ngo });
-  } else {
-    res.send({ code: 500, message: "Server Err" });
+  try {
+    let ngo = await Ngo.findOne({ _id: req.params.id });
+    if (ngo) {
+      res.send({ code: 200, data: ngo });
+    } else {
+      res.send({ code: 400, message: "Server Err" });
+    }
+  } catch (err) {
+    // console.log("err - ", err);
+    res.send({ code: 400, message: "Server Err" });
   }
 });
 
