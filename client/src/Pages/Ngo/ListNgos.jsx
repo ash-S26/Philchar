@@ -28,6 +28,8 @@ const ListNgos = () => {
   axios.defaults.headers.common["x-auth-token"] = localStorage.getItem("token");
 
   useEffect(() => {
+    if (!localStorage.getItem("token")) navigate("/auth");
+
     async function fetchallngos() {
       const response = await fetch(
         `${process.env.REACT_APP_BACKEND_URL}allngos`,
@@ -39,7 +41,8 @@ const ListNgos = () => {
         }
       );
       const data = await response.json();
-      if (data.code == 401) {
+      console.log(data);
+      if (data.data.code == 401) {
         navigate("/auth");
       }
 
@@ -293,7 +296,11 @@ const ListNgos = () => {
       </form>
       <br />
 
-      {getallngos()}
+      {searchlist
+        ? () => {
+            getallngos();
+          }
+        : null}
       <ToastContainer />
     </div>
   );
