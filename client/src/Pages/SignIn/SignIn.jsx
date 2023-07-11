@@ -67,6 +67,16 @@ const SignIn = () => {
       });
       return;
     }
+    if (data.status == 500) {
+      toast.error(`${data.message}`, {
+        position: "bottom-right",
+        autoClose: 8000,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "dark",
+      });
+      return;
+    }
     toast.success("Login Successful.", {
       position: "bottom-right",
       autoClose: 8000,

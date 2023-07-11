@@ -220,9 +220,7 @@ app.post("/signin", async (req, res) => {
     } else {
       res.json({
         message: "User does not exist",
-        data: {
-          info: "User not exist",
-        },
+        status: 500,
       });
     }
   }
